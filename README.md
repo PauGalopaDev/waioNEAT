@@ -1,3 +1,4 @@
+<h1 align="center">waioNEAT 🧬 🧠</h1>
 <p align="center">
   <a title="Version" rel="nofollow"><img src="https://img.shields.io/static/v1?label=version&message=0.0.0&color=blue" alt="Version"></a>
  <p/>
@@ -19,7 +20,9 @@ This is a pet project.
 You probably need Go 1.18 or later. It may work for some older versions tho.
 
 # Install
-> go get github.com/PauGalopaDev/waioNEAT@latest  
+```
+$ go get github.com/PauGalopaDev/waioNEAT@latest
+```
 
 # Usage  
 Before anything else, initilize the module:
