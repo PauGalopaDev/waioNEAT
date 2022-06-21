@@ -1,4 +1,4 @@
-package pneat
+package waioNEAT
 
 type Network struct {
 	Neurons map[int]*Neuron
@@ -14,6 +14,25 @@ func (n *Network) Feed() {
 		n.Value = 0.0
 		n.active = false
 	}
+}
+
+func (n *Network) FeedIn(ins map[string]float64) map[string]float64 {
+	for param, val := range ins {
+		n.Input[param].Value = val
+	}
+
+	result := make(map[string]float64, len(n.Output))
+	for _, n := range n.Output {
+		n.Activate()
+		result[n.Param] = n.Value
+	}
+
+	for _, n := range n.Neurons {
+		n.Value = 0.0
+		n.active = false
+	}
+
+	return result
 }
 
 func MakeNetwork(g *Genome) *Network {
