@@ -1,4 +1,4 @@
-package pneat
+package waioNEAT
 
 const (
 	INPUT  int = 0

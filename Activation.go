@@ -1,4 +1,4 @@
-package pneat
+package waioNEAT
 
 import "math"
 

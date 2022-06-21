@@ -1,4 +1,4 @@
-package pneat
+package waioNEAT
 
 import (
 	"math/rand"
@@ -14,7 +14,7 @@ var (
 	RndGen                *rand.Rand
 )
 
-func DefaultInit() {
+func Init() {
 	defInputAct = "binstep"
 	defHiddenAct = "sigmoid"
 	defOutputAct = "tanh"
