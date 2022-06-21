@@ -40,12 +40,12 @@ This module starts from the suposition that your program is going to have a set 
 
 So we can start creating a genome:
 ```go
-  ins := &map[string]float64{
-    "input1":1,
+  ins := map[string]float64{
+    "input1":1, // Name of the parameter and the chance of being present at the genome (from 0.0 to 1.0)
     "input2":0.5,
   }
   
-  outs := &map[string]float64{
+  outs := map[string]float64{
     "output1":0.9,
     "output2":0.9,
   }
@@ -54,14 +54,31 @@ So we can start creating a genome:
 ```
 
 You can always get more creative with the names but its just a way to identify the purpose of each neuron.
-Once we have the genome a network can be created:
+Once we have the genome a network can be created:  
+
 ```go
   network := MakeNetwork(genome)
 ```
-At this point, in order to Feed the network it can be done in various ways, either set 
-Llegados a este punto, para poder dar valores a la red se pueden hacer dos cosas, o bien iterar cada neurona de entrada en ```Network.Input```  y proporcionarlos cada vez que se necessite hacer Feed a la red,o por otro lado, utilizar punteros a los valores de las neuronas (abre mas possibilidades de integracion).
 
-Por ultimo quedan las siguientes funciones:
+At this point, in order to Feed the network it can be done in various ways:
+
+```go
+
+  ins := map[string]float64{
+    "input1":0.77, // Name of the parameter and its value
+    "input2":0.55,
+  }
+  outs := network.FeedIn(ins)
+  
+  // Or Feed, which feeds the network with the current neuron values.
+  // At this moment I don't know how to explain why this is useful but
+  //  it has to do with pointers to Neuron.Value
+  network.Feed()
+  
+  
+```
+  
+Lastly, for genome crossover and mutation...
 ```go
   // As the function names says, it performs a crossover between genomes and returns its offspring.
   offspring := Crossover(genome1, genome2)
