@@ -10,10 +10,6 @@ func (n *Network) Feed() {
 	for _, n := range n.Output {
 		n.Activate()
 	}
-	for _, n := range n.Neurons {
-		n.Value = 0.0
-		n.active = false
-	}
 }
 
 func (n *Network) FeedIn(ins map[string]float64) map[string]float64 {
