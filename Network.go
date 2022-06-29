@@ -6,12 +6,22 @@ type Network struct {
 	Output  map[string]*Neuron
 }
 
+/*
+Feedforwards the network, inputs must be setted before calling this function and outputs shall be retrived manually.
+*/
 func (n *Network) Feed() {
 	for _, n := range n.Output {
 		n.Activate()
 	}
+	for _, n := range n.Neurons {
+		n.active = false
+	}
 }
 
+/*
+Feedforwards the network, inputs are provided as a map("param name", value).
+It returns a map("param name", value) of the output values.
+*/
 func (n *Network) FeedIn(ins map[string]float64) map[string]float64 {
 	for param, val := range ins {
 		n.Input[param].Value = val
@@ -24,7 +34,6 @@ func (n *Network) FeedIn(ins map[string]float64) map[string]float64 {
 	}
 
 	for _, n := range n.Neurons {
-		n.Value = 0.0
 		n.active = false
 	}
 
