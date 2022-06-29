@@ -24,5 +24,6 @@ func Init() {
 }
 
 /*
-
- */
+To implement
+Integrated Bias and Bias as Input + Qty of Binputs (Not exclusive)
+*/

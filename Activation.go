@@ -8,7 +8,7 @@ type ActivationFn struct {
 }
 
 func Linear(x float64) float64 {
-
+	return x
 }
 
 func BinStep(x float64) float64 {
@@ -36,7 +36,7 @@ func Tanh(x float64) float64 {
 }
 
 var ActivationMap = map[string]ActivationFn{
-	"linear":    {"linear": Linear},
+	"linear":    {"linear", Linear},
 	"binstep":   {"binstep", BinStep},
 	"relu":      {"relu", ReLU},
 	"leakyrelu": {"leakyrelu", LeakyReLU},
