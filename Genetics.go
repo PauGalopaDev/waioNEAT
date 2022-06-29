@@ -6,7 +6,6 @@ import (
 	"fmt"
 )
 
-// 'Gene' describing a Neuron
 type NeuronGene struct {
 	Id         int
 	Type       int    `json:"type"`
@@ -86,7 +85,9 @@ func (g *Genome) Copy(t *Genome) {
 // Chance goes from 0 to 1.
 func MakeGenome(InParams map[string]float64, OutParams map[string]float64) *Genome {
 	genome := &Genome{
-		id_count: -1,
+		NeuronGenes:  make([]*NeuronGene, 0, len(InParams)+len(OutParams)),
+		SynapseGenes: make([]*SynapseGene, 0),
+		id_count:     -1,
 	}
 
 	actName := ""
@@ -250,8 +251,10 @@ func (g *Genome) MutateAddNode() {
 	g.SynapseGenes = append(g.SynapseGenes, s1, s2)
 }
 
-// A single new connection gene with a random weight is added connecting two previously unconnected
-// nodes.
+/*
+A single new connection gene with a random weight is added connecting two previously unconnected nodes.
+(K. O. Stanley and R. Miikkulainen; Evolutionary Computation Volume 10, Number 2)
+*/
 func (g *Genome) MutateAddSynapse() {
 	n1 := g.NeuronGenes[RndGen.Intn(len(g.NeuronGenes))]
 	n2 := g.NeuronGenes[RndGen.Intn(len(g.NeuronGenes))]
@@ -279,35 +282,3 @@ func (g *Genome) MutateAddSynapse() {
 	sg.Innov = sg.Checksum()
 	g.SynapseGenes = append(g.SynapseGenes, sg)
 }
-
-/*
-Implement mutations:
-	- Weight/s mutation
-*/
-
-/*
-REFERENCE:
-http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf
-
-Implement:
-	- [ ] Speciation:
-		This factor is calculated by taking in account dijoint and excess genes and wheigt
-		mean, and it's used to calculate the compatibility of genomes so they can be
-		clustered in species, so only genomes with enough compatibility shoud be able to
-		reproduce. This helps new species, that may end up being more fit than others but
-		aren't optimized yet, to survive.
-
-		Compatibility Distrance = (c_1 · E)/N + (c_2 · D)/N + c_3 · Ŵ
-		Where...
-			c_i : Importance factor
-			E   : Number of Excess genes
-			D	: Number of Disjoint genes
-			Ŵ	: Average weight differences of matching genes
-			N	: number of genes in the larger genome
-
-	- [ ] Minimized Dimensionality:
-		NEAT starts with a uniform population and without hidden nodes. New changes are
-		introduced by _Growth_ and protected by _Speciation_ but ultimately, fitness
-		evaluation determines if those changes are useful, therefore complexity increases
-		when needed.
-*/
