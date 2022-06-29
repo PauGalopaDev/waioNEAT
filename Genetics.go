@@ -282,3 +282,37 @@ func (g *Genome) MutateAddSynapse() {
 	sg.Innov = sg.Checksum()
 	g.SynapseGenes = append(g.SynapseGenes, sg)
 }
+
+/*
+Implement mutations:
+	- Weight/s mutation
+*/
+
+/*
+REFERENCE:
+http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf
+
+Implement:
+	- [ ] Speciation:
+		This factor is calculated by taking in account dijoint and excess genes and wheigt
+		mean, and it's used to calculate the compatibility of genomes so they can be
+		clustered in species, so only genomes with enough compatibility shoud be able to
+		reproduce. This helps new species, that may end up being more fit than others but
+		aren't optimized yet, to survive.
+
+		Compatibility Distrance = (c_1 · E)/N + (c_2 · D)/N + c_3 · Ŵ
+		Where...
+			c_i : Importance factor
+			E   : Number of Excess genes
+			D	: Number of Disjoint genes
+			Ŵ	: Average weight differences of matching genes
+			N	: number of genes in the larger genome
+
+	- [ ] Minimized Dimensionality:
+		NEAT starts with a uniform population and without hidden nodes. New changes are
+		introduced by _Growth_ and protected by _Speciation_ but ultimately, fitness
+		evaluation determines if those changes are useful, therefore complexity increases
+		when needed.
+*/
+
+// New change in 0.0.1 branch
