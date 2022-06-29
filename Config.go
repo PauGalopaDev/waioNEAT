@@ -15,7 +15,7 @@ var (
 )
 
 func Init() {
-	defInputAct = "binstep"
+	defInputAct = "linear"
 	defHiddenAct = "sigmoid"
 	defOutputAct = "tanh"
 	CrossoverParentChance = 0.5
