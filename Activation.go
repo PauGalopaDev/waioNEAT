@@ -4,34 +4,39 @@ import "math"
 
 type ActivationFn struct {
 	name string
-	fn   func(...float64) float64
+	fn   func(float64) float64
 }
 
-func BinStep(x ...float64) float64 {
-	if x[0] >= 1 {
+func Linear(x float64) float64 {
+
+}
+
+func BinStep(x float64) float64 {
+	if x >= 1 {
 		return 1
 	} else {
 		return 0
 	}
 }
 
-func ReLU(x ...float64) float64 {
-	return math.Max(x[0], 0)
+func ReLU(x float64) float64 {
+	return math.Max(x, 0)
 }
 
-func LeakyReLU(x ...float64) float64 {
-	return math.Max(x[0], x[0]*0.01)
+func LeakyReLU(x float64) float64 {
+	return math.Max(x, x*0.01)
 }
 
-func Sigmoid(x ...float64) float64 {
-	return 1 / (1 + math.Pow(math.E, -x[0]))
+func Sigmoid(x float64) float64 {
+	return 1 / (1 + math.Pow(math.E, -x))
 }
 
-func Tanh(x ...float64) float64 {
-	return math.Tanh(x[0])
+func Tanh(x float64) float64 {
+	return math.Tanh(x)
 }
 
 var ActivationMap = map[string]ActivationFn{
+	"linear":    {"linear": Linear},
 	"binstep":   {"binstep", BinStep},
 	"relu":      {"relu", ReLU},
 	"leakyrelu": {"leakyrelu", LeakyReLU},
@@ -40,6 +45,7 @@ var ActivationMap = map[string]ActivationFn{
 }
 
 var ActivationSlice = []ActivationFn{
+	{"linear", Linear},
 	{"binstep", BinStep},
 	{"relu", ReLU},
 	{"leakyrelu", LeakyReLU},
@@ -47,7 +53,7 @@ var ActivationSlice = []ActivationFn{
 	{"tanh", Tanh},
 }
 
-func RegisterActivation(name string, fn func(...float64) float64) {
+func RegisterActivation(name string, fn func(float64) float64) {
 	ActivationMap[name] = ActivationFn{name, fn}
 	ActivationSlice = append(ActivationSlice, ActivationFn{name, fn})
 }
