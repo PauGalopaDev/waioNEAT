@@ -21,12 +21,34 @@ func (ng *NeuronGene) Checksum() string {
 	return bs64.StdEncoding.EncodeToString([]byte(h.Sum(nil)))
 }
 
+func MakeNeuronGene(Id int, Type int, Param string, Activation string) *NeuronGene {
+	r := &NeuronGene{
+		Id:         Id,
+		Type:       Type,
+		Param:      Param,
+		Activation: Activation,
+	}
+	r.Innov = r.Checksum()
+	return r
+}
+
 type SynapseGene struct {
 	Sender  int     `json:"sender"`
 	Reciver int     `json:"reciver"`
 	Weight  float64 `json:"weight"`
 	Active  bool    `json:"active"`
 	Innov   string
+}
+
+func MakeSynapseGene(Sender int, Reciver int, Weight float64, Active bool) *SynapseGene {
+	r := &SynapseGene{
+		Sender:  Sender,
+		Reciver: Reciver,
+		Weight:  Weight,
+		Active:  Active,
+	}
+	r.Innov = r.Checksum()
+	return r
 }
 
 func (sg *SynapseGene) Checksum() string {
@@ -44,6 +66,18 @@ type Genome struct {
 func (g *Genome) nextId() int {
 	g.id_count += 1
 	return g.id_count
+}
+
+func (g *Genome) Copy(t *Genome) {
+	g.id_count = t.id_count
+	g.NeuronGenes = make([]*NeuronGene, 0, len(t.NeuronGenes))
+	for _, ng := range t.NeuronGenes {
+		g.NeuronGenes = append(g.NeuronGenes, MakeNeuronGene(ng.Id, ng.Type, ng.Param, ng.Activation))
+	}
+	g.SynapseGenes = make([]*SynapseGene, 0, len(t.SynapseGenes))
+	for _, sg := range t.SynapseGenes {
+		g.SynapseGenes = append(g.SynapseGenes, MakeSynapseGene(sg.Sender, sg.Reciver, sg.Weight, sg.Active))
+	}
 }
 
 // Creates a Genome with the given input and output neuron genes.
