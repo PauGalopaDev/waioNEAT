@@ -9,8 +9,9 @@ const (
 type Neuron struct {
 	Id          int
 	Type        int
-	Param       string
+	Bias        float64
 	Value       float64
+	Param       string
 	Connections map[*Neuron]float64
 	Activation  ActivationFn
 
@@ -28,11 +29,17 @@ func MakeNeuron(g *NeuronGene) *Neuron {
 		act = defHiddenAct
 
 	}
+
+	b := 0.0
+	if IntegratedBias {
+		b = RndGen.Float64()
+	}
 	n := &Neuron{
 		Id:          g.Id,
 		Type:        g.Type,
 		Param:       g.Param,
 		Value:       0.0,
+		Bias:        b,
 		Connections: make(map[*Neuron]float64),
 		Activation:  ActivationMap[act],
 		active:      false,
@@ -52,6 +59,7 @@ func (neuron *Neuron) Activate() float64 {
 		sum += sender.Activate() * weight
 	}
 
+	sum += neuron.Bias
 	neuron.Value = neuron.Activation.fn(sum)
 	return neuron.Value
 }

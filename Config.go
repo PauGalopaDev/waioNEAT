@@ -6,24 +6,45 @@ import (
 )
 
 var (
-	defInputAct           string
-	defHiddenAct          string
-	defOutputAct          string
-	CrossoverParentChance float64
-	RndActivation         bool
-	RndGen                *rand.Rand
+	defInputAct            string
+	defHiddenAct           string
+	defOutputAct           string
+	IntegratedBias         bool
+	AlwaysAddBiasNeuron    bool
+	CrossLargeParentChance float64
+	Seed                   int64
+	RndActivationHidden    bool
+	RndActivationInput     bool
+	RndActivationOutput    bool
+	RndGen                 *rand.Rand
 )
 
 func Init() {
 	defInputAct = "linear"
 	defHiddenAct = "sigmoid"
 	defOutputAct = "tanh"
-	CrossoverParentChance = 0.5
-	RndActivation = false
-	RndGen = rand.New(rand.NewSource(time.Hour.Nanoseconds()))
+	AlwaysAddBiasNeuron = false
+	IntegratedBias = false
+	CrossLargeParentChance = 0.5 // 0.3 would mean 30% chance for the larger and 70% for the smaller
+	RndActivationHidden = false
+	RndActivationInput = false
+	RndActivationOutput = false
+	Seed = time.Hour.Nanoseconds()
+	RndGen = rand.New(rand.NewSource(Seed))
 }
 
 /*
-To implement
-Integrated Bias and Bias as Input + Qty of Binputs (Not exclusive)
+Configuration format:
+{
+	"defInputAct":"linear",
+	"defHiddenAct":"sigmoid",
+	"defOutputAct":"tanh",
+	"IntegratedBias":false,
+	"CrossLargeParentChance":0.5,
+	"RndActivationHidden" = false
+	"RndActivationInput" = false
+	"RndActivationOutput" = false
+	"Seed":null,
+	""
+}
 */

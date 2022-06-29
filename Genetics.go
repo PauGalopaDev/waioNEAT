@@ -79,10 +79,12 @@ func (g *Genome) Copy(t *Genome) {
 	}
 }
 
-// Creates a Genome with the given input and output neuron genes.
-// No hidden neuron genes are included.
-// Accepts a map that relates each parameter with it's chance of apearing.
-// Chance goes from 0 to 1.
+/*
+Creates a Genome with the given input and output neuron genes.
+No hidden neuron genes are included.
+Accepts a map that relates each parameter with it's chance of apearing.
+Chance goes from 0 to 1.
+*/
 func MakeGenome(InParams map[string]float64, OutParams map[string]float64) *Genome {
 	genome := &Genome{
 		NeuronGenes:  make([]*NeuronGene, 0, len(InParams)+len(OutParams)),
@@ -90,12 +92,25 @@ func MakeGenome(InParams map[string]float64, OutParams map[string]float64) *Geno
 		id_count:     -1,
 	}
 
-	actName := ""
-	for param, chance := range InParams {
-		if RndGen.Float64() <= chance {
-			if RndActivation {
-				actName = ActivationSlice[RndGen.Intn(len(ActivationSlice))].name
+	if AlwaysAddBiasNeuron {
+		n := &NeuronGene{
+			Id:         genome.nextId(),
+			Type:       INPUT,
+			Param:      "bias",
+			Activation: "linear",
+			Innov:      "",
+		}
+		n.Innov = n.Checksum()
+		genome.NeuronGenes = append(genome.NeuronGenes, n)
+	}
 
+	actName := ""
+	// Create the input neuron genomes
+	for param, chance := range InParams {
+		// for each input parameter
+		if RndGen.Float64() <= chance {
+			if RndActivationInput {
+				actName = ActivationSlice[RndGen.Intn(len(ActivationSlice))].name
 			} else {
 				actName = defInputAct
 			}
@@ -111,11 +126,12 @@ func MakeGenome(InParams map[string]float64, OutParams map[string]float64) *Geno
 		}
 	}
 
+	// Create the output neuron genomes
 	for param, chance := range OutParams {
+		// for each output parameter
 		if RndGen.Float64() <= chance {
-			if RndActivation {
+			if RndActivationOutput {
 				actName = ActivationSlice[RndGen.Intn(len(ActivationSlice))].name
-
 			} else {
 				actName = defOutputAct
 			}
@@ -159,11 +175,11 @@ func Crossover(g1 *Genome, g2 *Genome) *Genome {
 	for _, sng := range g2.NeuronGenes {
 		// if its present on the larger genome...
 		if bng, f := bNeuronGenes[sng.Checksum()]; f {
-			if c := RndGen.Float64(); c <= 0.5 {
-				// there is a 50% chance for each equivalent
-				g.NeuronGenes = append(g.NeuronGenes, sng)
-			} else {
+			if c := RndGen.Float64(); c <= CrossLargeParentChance {
+				// Defaults to 50% chance for each parent
 				g.NeuronGenes = append(g.NeuronGenes, bng)
+			} else {
+				g.NeuronGenes = append(g.NeuronGenes, sng)
 			}
 		}
 	}
@@ -183,7 +199,7 @@ func Crossover(g1 *Genome, g2 *Genome) *Genome {
 
 	for _, ssg := range g2.SynapseGenes {
 		if bsg, f := bSynapseGenes[ssg.Checksum()]; f {
-			if c := RndGen.Float64(); c <= 0.5 {
+			if c := RndGen.Float64(); c <= CrossLargeParentChance {
 				g.SynapseGenes = append(g.SynapseGenes, ssg)
 			} else {
 				g.SynapseGenes = append(g.SynapseGenes, bsg)
@@ -208,7 +224,7 @@ func (g *Genome) MutateAddNode() {
 
 	// Get a random Activation and Synapse
 	rActivation := ""
-	if RndActivation {
+	if RndActivationHidden {
 		rActivation = ActivationSlice[RndGen.Intn(len(ActivationSlice))].name
 
 	} else {
@@ -242,6 +258,7 @@ func (g *Genome) MutateAddNode() {
 		Active:  true, // Leave to chance too?
 	}
 
+	// Set the Innov strings
 	n.Innov = n.Checksum()
 	s1.Innov = s1.Checksum()
 	s2.Innov = s2.Checksum()
